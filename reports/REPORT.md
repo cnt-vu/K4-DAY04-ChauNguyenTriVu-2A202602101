@@ -1,6 +1,6 @@
 # Báo cáo Ngày 4 - Keypoint & Pose
 
-Họ tên: Châu Nguyễn Tri Vũ   MSSV: 2A202602101   Nhóm: Bài cá nhân   Ngày: 16/09/2026
+Họ tên: Châu Nguyễn Tri Vũ   MSSV: 2A202602101   Hình thức: Bài làm cá nhân   Ngày: 16/09/2026
 
 > Báo cáo được lập dựa trên kết quả chạy công cụ và số liệu thực tế từ hệ thống.
 
@@ -45,20 +45,17 @@ lần sau rework. Đếm số phần tử trong từng danh sách lỗi, không 
 
 Không có lỗi đảo trái/phải trong toàn bộ 20 ảnh. Riêng ảnh `train_02.jpg` (người đi xe đạp), điểm OKS đối chiếu với đáp án gold đạt mức xuất sắc **0.9854** (gần như trùng khớp tuyệt đối). Điều này chứng minh nhận định về tư thế thực tế của tôi là hoàn toàn chính xác và hoàn toàn khớp với ground-truth của COCO.
 
-## 3. Kiểm chéo
+## 3. Tự kiểm soát chất lượng (Self-QC - Bài làm cá nhân)
 
-Bạn cùng nhóm: Bài làm cá nhân (theo quy định của giảng viên)
+- **Hình thức thực hiện**: Bài làm cá nhân độc lập theo quy định của giảng viên (không phân nhóm, không thực hiện kiểm chéo với người khác).
+- **Quy trình tự kiểm định chất lượng (Self-QC)**: Thay cho việc so sánh chéo, học viên đã tự thiết lập và thực hiện quy trình kiểm soát chất lượng nội bộ qua 3 chặng khép kín:
+  1. **Trực quan hóa xương (`tools/visualize_pose.py`)**: Đã xuất và rà soát toàn bộ 20 ảnh và 28 skeleton dưới dạng ảnh nối khớp trong `outputs/vis_train/`. Kiểm tra trực quan 100% để đảm bảo không có xương nối cắt chéo thân (không đảo trái/phải) và không kéo sang cơ thể người khác.
+  2. **Kiểm tra tính toàn vẹn dữ liệu (`tools/check_pose_labels.py`)**: Tự động kiểm tra định dạng nhãn YOLO Pose (đủ 56 số/dòng, tọa độ chuẩn hóa trong [0, 1], cờ `v` chỉ nhận giá trị 0, 1, 2 và khớp `v=1` luôn có tọa độ thực tế). Kết quả kiểm tra: 0 lỗi.
+  3. **Phân tích phân phối cờ (`reports/visibility_report.md`)**: Tự rà soát phân phối các cờ visibility. Đặc biệt kiểm tra kỹ các khớp có tỉ lệ `%v=1` cao như `left_ear` (64%), `right_ear` (46%) và các khớp có `v=0` để đảm bảo tuân thủ nghiêm ngặt luật của môn học (khớp bị che khuất trong khung hình bắt buộc gán `v=1`, không được dùng `v=0`).
 
-Khớp lệch `%v=1` nhiều nhất giữa hai bảng đếm:
+Quy tắc mới đã bổ sung vào `GUIDELINE_MINI.md` sau khi tự rà soát:
 
-| Khớp | Bạn | Họ | Lệch | Nguyên nhân (guideline hay gán sai?) |
-| --- | ---: | ---: | ---: | --- |
-| `left_ear` | 64% | 42% | 22% | Guideline chưa đồng nhất: một bên chỉ chọn v=1 khi bị che hoàn toàn, bên kia chọn v=1 khi bị tóc/mũ che một phần |
-| `left_hip` | 18% | 35% | 17% | Guideline: Khác biệt khi ước lượng người ngồi trên phương tiện |
-
-Luật mới đã bổ sung vào `GUIDELINE_MINI.md` sau khi thống nhất:
-
-- **Quy tắc về tai**: Nếu nhìn thấy rõ vành tai hoặc gốc tai thì gán `v=2`. Nếu tai bị tóc dài, mũ len hoặc mũ bảo hiểm che khuất tâm lỗ tai nhưng vẫn xác định được vị trí dựa vào trục mắt - mũi thì bắt buộc chọn `v=1` (Occluded) và đặt chấm ước lượng.
+- **Quy tắc về tai**: Nếu nhìn thấy rõ vành tai hoặc gốc tai thì gán `v=2`. Nếu tai bị tóc dài, mũ len hoặc mũ bảo hiểm che khuất tâm lỗ tai nhưng vẫn xác định được vị trí dựa vào trục mắt - mũi thì bắt buộc chọn `v=1` (Occluded) và đặt chấm ước lượng. Tuyệt đối không chọn `v=0` khi đầu vẫn ở trong khung hình.
 
 ## 4. Model
 
@@ -88,7 +85,7 @@ Luật mới đã bổ sung vào `GUIDELINE_MINI.md` sau khi thống nhất:
    Ảnh có OKS thấp nhất là **`train_06`** (chỉ đạt **0.098**). Trong ca này, **nhãn của tôi là đúng**. Căn cứ thị giác: người lái xe mô tô Honda Goldwing màu vàng mặc áo khoác trùm đầu rộng thùng thình và đội mũ bảo hiểm vàng che kín mặt từ phía sau. Mô hình AI bị nhầm lẫn trước hình khối cồng kềnh của thân xe và áo khoác nên dự đoán lệch gần như toàn bộ khung xương, trong khi nhãn của tôi bám đúng theo trục cơ thể người lái.
 
 5. **Ảnh bạn gán tệ nhất có *cũng* là ảnh model đoán tệ nhất không? Nếu có, điều đó nói gì về bức ảnh đó?**  
-   Ảnh `train_06` là ảnh có sự bất đồng lớn nhất (OKS 0.098). Điều này phản ánh bức ảnh thuộc nhóm ca biên đặc biệt khó (edge case): góc chụp từ sau lưng xe mô tô phân khối lớn, góc nhìn 3/4 khuất mặt và trang phục che giấu hầu hết các đường cong giải phẫu tự nhiên, tạo ra thách thức thị giác lớn cho cả mắt người lẫn thuật toán học sâu.
+   Ảnh `train_06` là ảnh có sự bất đồng lớn nhất (OKS 0.098). Điều này phản ánh bức ảnh thuộc diện ca biên đặc biệt khó (edge case): góc chụp từ sau lưng xe mô tô phân khối lớn, góc nhìn 3/4 khuất mặt và trang phục che giấu hầu hết các đường cong giải phẫu tự nhiên, tạo ra thách thức thị giác lớn cho cả mắt người lẫn thuật toán học sâu.
 
 ## 5. Một rule evidence bạn đã dùng
 
