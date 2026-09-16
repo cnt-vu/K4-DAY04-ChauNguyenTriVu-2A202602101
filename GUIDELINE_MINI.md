@@ -1,4 +1,4 @@
-# Mini guideline - nhóm: Bài cá nhân  |  người gán: Châu Nguyễn Tri Vũ (MSSV: 2A202602101)  |  ngày: 16/09/2026
+# Mini guideline - Bài làm cá nhân  |  Người gán: Châu Nguyễn Tri Vũ (MSSV: 2A202602101)  |  Ngày: 16/09/2026
 
 > Điền file này **trong lúc** gán nhãn, không phải sau khi xong. Mỗi lần bạn dừng lại
 > hơn 10 giây để phân vân, đó là một dòng phải ghi vào đây.
@@ -12,9 +12,9 @@
 - Ra ngoài mép ảnh -> `v = 0`, **không** đặt chấm.
 - Không dùng `Hidden` (`h`) - nó không được lưu vào file.
 
-## 2. Luật của nhóm bạn (phải điền)
+## 2. Quy tắc gán nhãn bổ sung (Quy chuẩn cá nhân)
 
-| Tình huống | Luật nhóm bạn chọn | Vì sao |
+| Tình huống | Quy tắc lựa chọn | Vì sao |
 | --- | --- | --- |
 | Hông của người mặc quần áo dài | Ước lượng tâm khớp hông tại vị trí mấu chuyển lớn xương đùi (ngay dưới cạp quần/thắt lưng); gán `v=1` nếu mặc áo dài trùm qua hông, gán `v=2` nếu nhìn rõ nếp gấp đùi | Hông không có bề mặt da nhìn thấy trực tiếp khi mặc đồ; căn theo mốc giải phẫu vận động để chiều dài xương đùi và thân không bị lệch |
 | Tai bị tóc hoặc mũ bảo hiểm che một phần | Nếu thấy được vành tai hoặc gốc tai thì chọn `v=2`; nếu mũ bảo hiểm hoặc tóc che khuất hoàn toàn lỗ tai nhưng vẫn định vị được dựa trên trục mắt - mũi thì chọn `v=1` và chấm ước lượng | Đảm bảo tính nhất quán giữa bằng chứng nhìn thấy trực tiếp và ước lượng có căn cứ thị giác |
@@ -34,7 +34,7 @@
 
 ### Ca 2 - ảnh `train_02.jpg`, người thứ `1` (người đi xe đạp), khớp `left_elbow, right_elbow`
 
-- Mơ hồ ở chỗ nào: Người lái quay lưng về phía sau theo góc chéo, tay phải co lại gần ba lô, tay trái vươn ra phía trước cầm ghi-đông, cùi chỏ bị che một phần bởi góc nhìn nghiêng.
+- Mơ hồ ở chỗ nào: Người lái quay lưng về phía sau theo góc nghiêng 3/4, tay phải co lại gần ba lô, tay trái vươn ra phía trước cầm ghi-đông, cùi chỏ bị che một phần bởi góc nhìn nghiêng.
 - Bạn quyết thế nào: Chấm tâm khớp tại điểm giao trục bắp tay và cẳng tay, gán `v = 2` cho khớp nhìn rõ và `v = 1` nếu bị khuất góc nhìn.
 - Vì sao: Trục xương hai phần tay vẫn tạo thành góc rõ ràng, cho phép định vị chính xác cùi chỏ giải phẫu.
 - Nếu người khác quyết ngược lại thì model học sai cái gì: Nếu bỏ qua không chấm hoặc đánh `v = 0`, model sẽ mất khả năng dự đoán tư thế tay khi lái xe ở góc nhìn 3/4 từ phía sau.
@@ -46,8 +46,12 @@
 - Vì sao: Phần hông vẫn nằm trong phạm vi ảnh (ngay phía trên yên xe), còn chân hoàn toàn nằm ngoài khung ảnh phía dưới và hai bên.
 - Nếu người khác quyết ngược lại thì model học sai cái gì: Nếu để chân `v = 1`, model sẽ cố gắng đoán vị trí chân ở những nơi hoàn toàn không có thông tin hình ảnh, gây ảo giác (hallucination) khi dự đoán pose.
 
-## 4. Sau khi so visibility report với bạn cùng nhóm
+## 4. Tự đánh giá và hoàn thiện quy tắc sau khi phân tích visibility report
 
-- Khớp lệch `%v=1` nhiều nhất: `left_ear` (bạn `64%` / đối chiếu `42%`)
-- Nguyên nhân là **guideline chưa rõ** hay **một trong hai bên gán sai**: Do guideline ban đầu chưa làm rõ tiêu chuẩn tai bị tóc hoặc quai mũ che một phần (che bao nhiêu % diện tích thì chuyển sang `v=1`).
-- Luật mới bổ sung vào mục 2 sau khi thống nhất: Chỉ cần thấy được gốc tai hoặc vành tai thì giữ `v=2`; nếu lỗ tai và cấu trúc chính bị che hoàn toàn thì mới đánh dấu `v=1`.
+- **Hình thức thực hiện**: Bài làm cá nhân độc lập (không kiểm chéo).
+- **Khớp có tỉ lệ `%v=1` cao nhất trong báo cáo**: `left_ear` (64%) và `right_ear` (46%).
+- **Phân tích nguyên nhân**: Do đối tượng trong ảnh thường quay nghiêng 3/4 hoặc đội mũ bảo hiểm/tóc dài che khuất một phần vành tai hoặc lỗ tai. Ban đầu nảy sinh phân vân: che khuất bao nhiêu diện tích thì chuyển trạng thái từ `v=2` sang `v=1`.
+- **Quy tắc chuẩn hóa đã bổ sung vào mục 2 sau khi tự rà soát**:
+  - Chỉ cần nhìn thấy rõ vành tai hoặc gốc tai thì chọn `v=2`.
+  - Nếu lỗ tai và cấu trúc chính bị tóc/mũ che khuất hoàn toàn nhưng vẫn xác định được vị trí dựa theo trục mắt - mũi thì chọn `v=1` (Occluded) và chấm điểm ước lượng.
+  - Tuyệt đối không chọn `v=0` nếu đầu vẫn nằm trọn trong khung hình ảnh.
